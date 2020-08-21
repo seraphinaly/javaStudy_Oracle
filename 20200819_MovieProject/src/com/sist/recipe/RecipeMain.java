@@ -77,6 +77,7 @@ public class RecipeMain {
    public ArrayList<ChefVO> chefAllData()
    {
       ArrayList<ChefVO> list=new ArrayList<ChefVO>();
+      MovieDAO dao=new MovieDAO();
       try
       {
          int k=1;
@@ -110,8 +111,9 @@ public class RecipeMain {
                   System.out.println("Mem-cont2:"+vo.getMem_cont2());
                   System.out.println("k="+k);
                   System.out.println("---------------------------------------------------------");
-                  //dao.chefInsert(vo);
-                   k++;
+                  dao.chefInsert(vo);
+                  Thread.sleep(100);
+                  k++;
                }catch(Exception ex){}
                //list.add(vo);
             }

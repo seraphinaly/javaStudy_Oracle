@@ -5,6 +5,7 @@ import java.util.*;
 
 import com.sist.manager.MovieVO;
 import com.sist.manager.NewsVO;
+import com.sist.recipe.ChefVO;
 import com.sist.recipe.RecipeVO;
 
 public class MovieDAO{
@@ -234,5 +235,92 @@ public class MovieDAO{
 	      }finally {
 	         disConnection();
 	      }
+	   }
+	   
+	   public void chefInsert(ChefVO vo) {
+		   try{
+			//연결
+			getConnection();
+			//sql문장
+			String sql="INSERT INTO chef VALUES(?,?,?,?,?,?)";
+			//전송
+			ps=conn.prepareStatement(sql);
+			//?값 채우기
+			ps.setString(1,vo.getPoster());
+			ps.setString(2,vo.getChef());
+			ps.setString(3,vo.getMem_cont1());
+			ps.setString(4,vo.getMem_cont3());
+			ps.setString(5,vo.getMem_cont7());
+			ps.setString(6,vo.getMem_cont2());
+			//실행
+			ps.executeUpdate();
+		}catch(Exception ex){
+			System.out.println(ex.getMessage());
+		}finally {
+			disConnection();
+		}
+	   }
+	   
+	   //로그인
+	   /* 목록(ArrayList)
+	    * 상세보기(~VO)
+	    * 경우의 수 :  2개 boolean
+	    *        	3개 이상 String,int
+	    * 여기는 3가지 경우=>String
+	    *  1.ID 없는 경우
+	    *  2.PWD 틀린 경우
+	    *  3.로그인       
+	    */
+	   public String isLogin(String id, String pwd) {
+		   String result="";
+		   try{
+			getConnection();
+			String sql="SELECT COUNT(*) FROM member WHERE id=?";//id 존재?
+			ps=conn.prepareStatement(sql);
+			ps.setString(1,id);
+			ResultSet rs=ps.executeQuery();
+			rs.next();
+			int count=rs.getInt(1);
+			rs.close();
+			
+			if(count==0) {
+				result="NOID"; //id 없다
+			}else {
+				sql="SELECT pwd FROM member WHERE id=?";
+				ps=conn.prepareStatement(sql);
+				ps.setString(1,id);
+				rs=ps.executeQuery();
+				rs.next();
+				String db_pwd=rs.getString(1); 
+				rs.close();
+				//id비밀번호=보내준 비밀번호 같으면 로그인
+				if(db_pwd.equals(pwd)) {
+					result="OK";
+				}else {
+					result="NOPWD";
+				}
+			}
+				
+		}catch(Exception ex){
+			System.out.println(ex.getMessage());
+		}finally {
+			disConnection();
+		}
+		   return result;
+	   }
+	   
+	   public void replyDelete(int no) {
+		   try{
+			getConnection();
+			String sql="DELETE FROM daum_reply WHERE no=?";
+			//전송
+			ps=conn.prepareStatement(sql);
+			ps.setInt(1,no);
+			ps.executeUpdate();
+		}catch(Exception ex){
+			System.out.println(ex.getMessage());
+		}finally {
+			disConnection();
+		}
 	   }
 }

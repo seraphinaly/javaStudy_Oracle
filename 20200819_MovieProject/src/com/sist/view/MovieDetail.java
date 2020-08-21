@@ -8,6 +8,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.sist.dao.MovieDAO;
 import com.sist.dao.ReplyVO;
@@ -113,6 +114,9 @@ public class MovieDetail extends HttpServlet{
 		out.println("<table class=table>");
 		out.println("<tr>");
 		out.println("<td>");
+		
+		HttpSession session=request.getSession();
+		String id=(String)session.getAttribute("id");//저장된 id를 가져온다
 		for(ReplyVO rvo: rList){
 			out.println("<table class=table>");
 			out.println("<tr>");
@@ -120,9 +124,12 @@ public class MovieDetail extends HttpServlet{
 			out.println(rvo.getId()+"("+rvo.getDbday()+")");
 			out.println("</td>");
 			out.println("<td class=text-right>");
+			
+			if(id.equals(rvo.getId())) {
 			out.println("<a href=# class=\"btn btn-xs btn-primary\">수정</a>");
-			out.println("<a href=# class=\"btn btn-xs btn-primary\">삭제</a>");
-
+			out.println("<a href=MovieDelete?no="+rvo.getNo()+"&mno="+vo.getNo()+" class=\"btn btn-xs btn-primary\">삭제</a>");
+			}
+			
 			out.println("</td>");
 			out.println("</tr>");
 			out.println("<tr>");
@@ -151,10 +158,13 @@ public class MovieDetail extends HttpServlet{
 		String mno=request.getParameter("mno");
 		String msg=request.getParameter("msg");
 		
+		HttpSession session=request.getSession();
+		String id=(String)session.getAttribute("id");
+		
 		ReplyVO vo=new ReplyVO();
 		vo.setMno(Integer.parseInt(mno));
 		vo.setMsg(msg);
-		vo.setId("hoohoo_"); //Session
+		vo.setId(id); //Session
 		//DAO 전송
 		MovieDAO dao=new MovieDAO();
 		dao.movieReplyInsert(vo);
