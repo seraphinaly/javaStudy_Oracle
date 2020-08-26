@@ -128,7 +128,7 @@ public class BoardDAO{
 		}
 		return vo;
 	}
-	
+	//새글등록
 	public void boardInsert(BoardVO vo) {
 		try {
 			getConnection();
@@ -146,6 +146,71 @@ public class BoardDAO{
 			}finally {
 				disConnection();
 			}
+	}
+	
+	//수정하기 =>조회수증가만 다름
+	public BoardVO boardUpdateData(int no) {
+		BoardVO vo=new BoardVO();
+		try {
+			getConnection();
+			//데이터 읽기
+			String sql="SELECT no,name,subject,content,regdate,hit FROM jsp_board "
+			  + "WHERE no=?";
+			ps=conn.prepareStatement(sql);
+			ps.setInt(1,no);
+			//결과값 받기
+			ResultSet rs=ps.executeQuery();
+			rs.next();
+			vo.setNo(rs.getInt(1));
+			vo.setName(rs.getString(2));
+			vo.setSubject(rs.getString(3));
+			vo.setContent(rs.getString(4));
+			vo.setRegdate(rs.getDate(5));
+			vo.setHit(rs.getInt(6));
+			rs.close();
+		}catch(Exception ex) {
+			System.out.println(ex.getMessage());
+		}finally {
+			disConnection();
+		}
+		return vo;
+	}
+	//수정
+	public boolean boardUpdate(BoardVO vo) {
+		boolean bCheck=false;
+		try{
+			getConnection();
+			String sql="SELECT pwd FROM jsp_board "
+					+ "WHERE no=?";
+			ps=conn.prepareStatement(sql);
+			ps.setInt(1,vo.getNo());
+			
+			ResultSet rs=ps.executeQuery();
+			rs.next();
+			String db_pwd=rs.getString(1);
+			rs.close();
+			
+			if(db_pwd.equals(vo.getPwd())) {
+				bCheck=true;
+				//수정
+				sql="UPDATE jsp_board SET "
+				  + "name=?,subject=?,content=? WHERE no=?";
+				ps=conn.prepareStatement(sql);
+				ps.setString(1,vo.getName());
+				ps.setString(2,vo.getSubject());
+				ps.setString(3,vo.getContent());
+				ps.setInt(4,vo.getNo());
+				ps.executeUpdate();
+			}else {
+				bCheck=false;
+			}
+			
+		}catch(Exception ex){
+			System.out.println(ex.getMessage());
+		}finally {
+			disConnection();
+		}
+		return bCheck;
 	}
 }
 

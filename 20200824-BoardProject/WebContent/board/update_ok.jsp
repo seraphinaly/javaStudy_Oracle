@@ -12,16 +12,28 @@
 	String subject=request.getParameter("subject");
 	String content=request.getParameter("content");
 	String pwd=request.getParameter("pwd");
+	String no=request.getParameter("no");
+	
 	//데이터 모아서 DAO로 전송
 	BoardVO vo=new BoardVO();
 	vo.setName(name);
 	vo.setSubject(subject);
 	vo.setContent(content);
 	vo.setPwd(pwd);
+	vo.setNo(Integer.parseInt(no));
 	
 	//DAO연결 => oracle INSERT
 	BoardDAO dao=new BoardDAO();
-	dao.boardInsert(vo);
-	//이동
-	response.sendRedirect("list.jsp");
+	boolean bCheck=dao.boardUpdate(vo);
+	
+	if(bCheck==true){
+		response.sendRedirect("detail.jsp?no="+no);
+	}else{
+%>		
+		<script>
+		alert("비밀번호가 틀립니다.");
+		history.back();
+		</script>
+<%		
+	}
 %>
