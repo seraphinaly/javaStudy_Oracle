@@ -4,6 +4,8 @@
 	//list.jsp?page=1 =>request.getParameter("page"); 1
 	//list.jsp => request.getParameter("page"); null
 	//list.jsp?page= =>request.getParameter("page"); ""(공백)
+	
+	//첫 화면시 에러방지 코드
 	String strPage=request.getParameter("page");
 	if(strPage==null){
 		strPage="1";
