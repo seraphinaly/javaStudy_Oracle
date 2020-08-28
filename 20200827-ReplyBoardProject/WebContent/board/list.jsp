@@ -9,6 +9,7 @@ if(strPage==null) // 첫페이지는 페이지선택이 불가능 => 1페이지�
 int curpage=Integer.parseInt(strPage);// 현재 페이지 
 // 페이지에 해당되는 데이터를 읽기 
 ReplyBoardDAO dao=new ReplyBoardDAO();
+
 // 10개씩
 ArrayList<ReplyBoardVO> list=dao.boardListData(curpage);
 // 출력 
@@ -25,7 +26,7 @@ count=count-((curpage*10)-10);
 </head>
 <body>
 	<center>
-		<h1>묻고답하기</h1>
+		<h1>묻고 답하기</h1>
 		<table class="table_content" width=700>
 			<tr>
 				<td><a href="insert.jsp">등록</a></td>
@@ -45,28 +46,25 @@ count=count-((curpage*10)-10);
 			<tr height=30>
 				<td width=10% align=center><%=count--%></td>
 				<td width=45%>
-				<%
-					if(vo.getGroup_tab()>0){
+					<%
+						if(vo.getGroup_tab()>0){
 						for(int i=0; i<vo.getGroup_tab(); i++){
 							out.println("&nbsp;&nbsp;");
 						}
-				%> <img src="image/icon_reply.gif" style="border: none"> 
-				<%
- 					}		
- 				%> 
- 				<%=vo.getSubject()%> &nbsp; 
- 				<%
- 					Date date=new Date();
- 					SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
- 					String today=sdf.format(date);
- 					String dbday=vo.getRegdate().toString();
+					%> <img src="image/icon_reply.gif" style="border: none"> <%
+ 	}
+ %> <!-- 내용보기로 이동 --> <a
+					href="detail.jsp?no=<%=vo.getNo()%>&page=<%=curpage%>"><%=vo.getSubject()%></a>
+					&nbsp; <%
+ 	Date date=new Date();
+ SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+ String today=sdf.format(date);
+ String dbday=vo.getRegdate().toString();
 
- 					if(today.equals(dbday)){
- 				%> 
- 				<sup><img src="image/new.gif" style="border: none"></sup> 
- 				<%
- 					}
- 				%>
+ if(today.equals(dbday)){
+ %> <sup><img src="image/new.gif" style="border: none"></sup> <%
+ 	}
+ %>
 				</td>
 				<td width=15% align=center><%=vo.getName()%></td>
 				<td width=20% align=center><%=vo.getRegdate().toString()%></td>
@@ -78,16 +76,20 @@ count=count-((curpage*10)-10);
 		</table>
 		<table class="table_content" width=700>
 			<tr>
-				<td align=left>Search: <select name=fd>
-						<option value="name">이름</option>
-						<option value="subject">제목</option>
-						<option value="content">내용</option>
-				</select> <input type=text name=ss size=10> <input type=submit
-					value="찾기">
+				<form method=post action="find.jsp">
+					<td align=left>
+					Search: 
+							<select name=fs>
+							<option value="name">이름</option>
+							<option value="subject">제목</option>
+							<option value="content">내용</option>
+					</select> <input type=text name=ss size=10> <input type=submit
+						value="찾기">
+				</form>
 				</td>
 				<td align=right><a
-					href="list.jsp?page=<%=curpage>1? curpage-1 : curpage%>">이전</a> <%=curpage%>page
-					/ <%=totalpage%> pages <a
+					href="list.jsp?page=<%=curpage>1? curpage-1 : curpage%>">이전</a> <%=curpage%>
+					page / <%=totalpage%> pages <a
 					href="list.jsp?page=<%=curpage<totalpage? curpage+1 : curpage%>">다음</a>
 				</td>
 			</tr>

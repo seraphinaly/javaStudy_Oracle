@@ -153,6 +153,7 @@ public class BoardDAO{
 		BoardVO vo=new BoardVO();
 		try {
 			getConnection();
+			//조회수증가 없어짐
 			//데이터 읽기
 			String sql="SELECT no,name,subject,content,regdate,hit FROM jsp_board "
 			  + "WHERE no=?";
